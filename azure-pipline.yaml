@@ -31,8 +31,8 @@ stages:
               buildType: 'specific'
               project: '00ba1eed-ee40-4302-9da3-16779398b203'
               definition: '3'
-              buildVersionToDownload: 'latestFromBranch'
-              branchName: 'refs/heads/main'
+              buildVersionToDownload: 'specific'
+              pipelineId: '56'
               artifactName: 'QualityGateStats_Final_Average'
               targetPath: '$(Build.ArtifactStagingDirectory)'
             
