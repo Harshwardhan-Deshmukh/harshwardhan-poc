@@ -35,5 +35,13 @@ stages:
               branchName: 'refs/heads/main'
               artifactName: 'QualityGateStats_Final_Average'
               targetPath: '$(Build.ArtifactStagingDirectory)'
+            
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                ls
+                pwd
+
 
       
