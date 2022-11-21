@@ -25,5 +25,15 @@ stages:
               script: |
                 # Write your commands here
                 echo "Checking complete"
+          
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'specific'
+              project: '00ba1eed-ee40-4302-9da3-16779398b203'
+              definition: '3'
+              buildVersionToDownload: 'latestFromBranch'
+              branchName: 'refs/heads/main'
+              artifactName: 'QualityGateStats_Final_Average'
+              targetPath: '$(Pipeline.Workspace)'
 
       
