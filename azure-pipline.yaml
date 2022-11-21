@@ -57,7 +57,7 @@ stages:
                 
                 # Variable for accessing the current working directory easily
                 os.chdir("..")
-                cwd = os.getcwd()+"/a"
+                cwd = os.getcwd()+"\a"
                 print("Current working directory is:", cwd)
                 print("\nChecking the Average Percentage Value of Quality Gates")
                 # looping through all the items present in this cwd path
