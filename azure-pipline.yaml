@@ -90,8 +90,10 @@ stages:
                 validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
                 """
                 
-                # if averagePercentage < 80:
-                #     sys.exit("Quality Gate Failed!")
+                if averagePercentage < 80:
+                    sys.exit("Quality Gate Failed!")
+                elif averagePercentage > 90:
+                    print("Quality Gate Passed!")
                 
                 print("Program completed successfully")
             
