@@ -117,7 +117,9 @@ stages:
           - task: PowerShell@1
             inputs:
               scriptType: 'inlineScript'
-              inlineScript: 'pip install sketchpy'
+              inlineScript: |
+                python -m pip install --upgrade pip
+                pip install sketchpy
               
           - task: PythonScript@0
             inputs:
