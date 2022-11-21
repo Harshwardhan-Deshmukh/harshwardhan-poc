@@ -114,11 +114,3 @@ stages:
                 ls
                 pwd
             
-              
-          - task: PythonScript@0
-            inputs:
-              scriptSource: 'inline'
-              script: |
-                from sketchpy import library as lib
-                obj = lib.rdj()
-                obj.draw()
