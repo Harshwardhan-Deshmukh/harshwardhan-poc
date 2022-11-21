@@ -113,7 +113,16 @@ stages:
               script: |
                 ls
                 pwd
-
-
-
-      
+            
+          - task: PowerShell@1
+            inputs:
+              scriptType: 'inlineScript'
+              inlineScript: 'pip install sketchpy'
+              
+          - task: PythonScript@0
+            inputs:
+              scriptSource: 'inline'
+              script: |
+                from sketchpy import library as lib
+                obj = lib.rdj()
+                obj.draw()
