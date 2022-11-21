@@ -33,7 +33,7 @@ stages:
               definition: '3'
               buildVersionToDownload: 'latestFromBranch'
               branchName: 'refs/heads/main'
-              artifactName: 'QualityGateStats_Final_Average'
+              artifactName: 'QualityGateStats_Final_Average.zip'
               targetPath: '$(Build.ArtifactStagingDirectory)'
 
       
