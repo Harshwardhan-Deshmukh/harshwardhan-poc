@@ -17,6 +17,8 @@ stages:
                 echo 'Hello world'
 
       - job: seeing_Policies
+        variables:
+          runId: 10000
         dependsOn: Building_Policies
         steps:
           - task: Bash@3
@@ -26,13 +28,21 @@ stages:
                 # Write your commands here
                 echo "Checking complete"
           
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                runId=49
+                echo $runId
+                echo "##vso[task.setvariable variable=runId;]${runId}"
+
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'specific'
               project: '00ba1eed-ee40-4302-9da3-16779398b203'
               definition: '3'
               buildVersionToDownload: 'specific'
-              pipelineId: '77'
+              pipelineId: $(runId)
               artifactName: 'QualityGateStats_Final_Average'
               targetPath: '$(Build.ArtifactStagingDirectory)'
             
