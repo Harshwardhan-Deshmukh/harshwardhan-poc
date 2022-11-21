@@ -17,13 +17,13 @@ stages:
                 echo 'Hello world'
 
       - job: seeing_Policies
+        dependsOn: Building_Policies
         steps:
           - task: Bash@3
             inputs:
               targetType: 'inline'
               script: |
                 # Write your commands here
-                echo "name         "
-                sleep 60
+                echo "Checking complete"
 
       
