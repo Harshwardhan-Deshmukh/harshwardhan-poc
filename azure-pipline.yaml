@@ -114,12 +114,6 @@ stages:
                 ls
                 pwd
             
-          - task: PowerShell@1
-            inputs:
-              scriptType: 'inlineScript'
-              inlineScript: |
-                python -m pip install --upgrade pip
-                pip install sketchpy
               
           - task: PythonScript@0
             inputs:
