@@ -42,6 +42,10 @@ stages:
               script: |
                 ls
                 pwd
+                cd ..
+                cd a
+                ls
+                pwd
 
 
       
