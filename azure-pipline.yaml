@@ -5,7 +5,7 @@ pool:
   vmImage: "windows-latest"
     
 stages:
-  - stage: first stage
+  - stage: first-stage
     jobs:
       - job: Building_Policies
         steps:
@@ -17,10 +17,8 @@ stages:
                 echo 'Hello world'
 
       - job: seeing_Policies
-        
         steps:
           - task: Bash@3
-            timeoutInMinutes: 1
             inputs:
               targetType: 'inline'
               script: |
