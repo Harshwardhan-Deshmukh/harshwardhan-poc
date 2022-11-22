@@ -61,7 +61,7 @@ stages:
             inputs:
               scriptSource: 'inline'
               script: |
-                import os, shutil, time, sys
+                import os, sys
                 from pathlib import Path
                 from zipfile import ZipFile
                 
@@ -101,11 +101,11 @@ stages:
                 """
                 
                 if averagePercentage < 80:
+                    print("Quality Gate check completed successfully")
                     sys.exit("Quality Gate Failed!")
                 elif averagePercentage > 90:
+                    print("Quality Gate check completed successfully")
                     print("Quality Gate Passed!")
-                
-                print("Program completed successfully")
             
           - task: Bash@3
             inputs:
