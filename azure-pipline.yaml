@@ -38,7 +38,7 @@ stages:
       - job: waitForValidation
         variables:
           - name : harsh
-            value : harshwardhan.deshmukh@publicissapient.com
+            value : hardeshm@publicisgroupe.net
         displayName: Wait for external validation
         dependsOn: seeing_Policies
         pool: server
