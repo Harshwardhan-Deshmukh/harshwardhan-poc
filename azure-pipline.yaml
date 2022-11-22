@@ -17,8 +17,6 @@ stages:
                 echo 'Hello world'
 
       - job: seeing_Policies
-        variables:
-          runId: null
         dependsOn: Building_Policies
         steps:
           - task: Bash@3
