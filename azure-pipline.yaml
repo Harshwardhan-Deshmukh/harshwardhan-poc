@@ -29,9 +29,7 @@ stages:
                 echo "Checking complete"
           
           - template: "./template.yml"
-            parameters:
-              runId: null
-
+          
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'specific'
