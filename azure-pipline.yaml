@@ -36,6 +36,7 @@ stages:
 
 
       - job: waitForValidation
+        dependsOn: seeing_Policies
         displayName: Wait for external validation
         pool: server
         timeoutInMinutes: 60 # job times out in 3 days
