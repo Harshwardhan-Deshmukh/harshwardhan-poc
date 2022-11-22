@@ -1,6 +1,5 @@
 parameters:
-  - name: whichState
-    type: object
+  - name: runId
   
 
 steps:
@@ -8,10 +7,14 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        #!/bin/bash
-        # Write your commands here
-        echo 'Hello world'
-        myarray=(${{join(' ',parameters.whichState)}})
-        echo "My array: ${myarray[@]}"
-        echo ${myarray}
-        echo "Number of elements in the array: ${#myarray[@]}"
+        # runId=95
+        echo $runId
+        echo "##vso[task.setvariable variable=runId;]${{parameters.runId}}"
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo ${{parameters.runId}}
+
+
