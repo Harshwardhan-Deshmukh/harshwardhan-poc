@@ -43,9 +43,10 @@ stages:
         steps:
           - task: ManualValidation@0
             inputs:
-              notifyUsers: 'venkatanagasairaviteja.yelchuri@publicissapient.com'
+              notifyUsers: |
+                venkatanagasairaviteja.yelchuri@publicissapient.com
+                harshwardhan.deshmukh@publicissapient.com
               instructions: 'Please validate the build configuration and resume'
-              onTimeout: 'resume'
             
 
             
