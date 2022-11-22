@@ -39,8 +39,8 @@ stages:
         variables:
           - name : harsh
             value : hardeshm@publicisgroupe.net
-          - name : harsh2
-            value : harshwardhanet7007@gmail.com 
+          - name : ravi
+            value : yenyelch@publicisgroupe.net
         displayName: Wait for external validation
         dependsOn: seeing_Policies
         pool: server
@@ -51,7 +51,7 @@ stages:
           inputs:
             notifyUsers: | 
               $(harsh)
-              $(harsh2)
+              $(ravi)
             instructions: 'Please validate the build configuration and resume'
             onTimeout: 'resume'
             
