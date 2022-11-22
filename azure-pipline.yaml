@@ -38,7 +38,7 @@ stages:
       - job: waitForValidation
         variables:
           - name : harsh
-            value : harshwardhanet7007@gmail.com 
+            value : harshwardhan.deshmukh@publicissapient.com
         displayName: Wait for external validation
         dependsOn: seeing_Policies
         pool: server
@@ -47,7 +47,7 @@ stages:
         - task: ManualValidation@0
           timeoutInMinutes: 1440 # task times out in 1 day
           inputs:
-            notifyUsers: $(harsh)
+            notifyUsers: '$(harsh)'
             instructions: 'Please validate the build configuration and resume'
             onTimeout: 'resume'
             
