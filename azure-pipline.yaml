@@ -33,6 +33,18 @@ stages:
               targetType: 'inline'
               script: |
                 echo 'Hello World'
+
+
+      - job: waitForValidation
+        displayName: Wait for external validation
+        pool: server
+        timeoutInMinutes: 60 # job times out in 3 days
+        steps:
+          - task: ManualValidation@0
+            inputs:
+              notifyUsers: 'venkatanagasairaviteja.yelchuri@publicissapient.com'
+              instructions: 'Please validate the build configuration and resume'
+              onTimeout: 'resume'
             
 
             
