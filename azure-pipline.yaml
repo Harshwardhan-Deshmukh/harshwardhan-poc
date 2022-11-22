@@ -17,6 +17,8 @@ stages:
                 echo 'Hello world'
 
       - job: seeing_Policies
+        variables:
+          runId: null
         dependsOn: Building_Policies
         steps:
           - task: Bash@3
@@ -28,76 +30,11 @@ stages:
           
           - template: "./template.yml"
           
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'specific'
-              project: '00ba1eed-ee40-4302-9da3-16779398b203'
-              definition: '3'
-              buildVersionToDownload: 'specific'
-              pipelineId: $(runId)
-              artifactName: 'QualityGateStats_Final_Average'
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-            
           - task: Bash@3
             inputs:
               targetType: 'inline'
               script: |
-                ls
-                pwd
-                cd ..
-                cd a
-                ls
-                pwd
-          
-          - task: PythonScript@0
-            inputs:
-              scriptSource: 'inline'
-              script: |
-                import os, sys
-                from pathlib import Path
-                from zipfile import ZipFile
-                
-                # Variable for accessing the current working directory easily
-                os.chdir("..")
-                cwd = os.getcwd()+"/a"
-                print("Current working directory is:", cwd)
-                print("\nChecking the Average Percentage Value of Quality Gates")
-                # looping through all the items present in this cwd path
-                for file in os.listdir(cwd):
-                    # Verification whether file name with prefix Percentage_Average_QualityGateStats_ is present in this directory or not
-                    if file.startswith("QualityGateStats_Final_Average"):
-                        with ZipFile(cwd+"/"+file, 'r') as zObject:
-                            fileName=os.path.splitext(os.path.basename(cwd+"/"+file))[0]
-                            # Unzipping the file to the cwd path
-                            zObject.extractall(path=cwd)
-                
-                # Changing the current working directory to cwd path which is declared above
-                os.chdir(cwd)
-                averagePercentage=0
-                # Reading the average percentage value declared in percent_result.txt file
-                with open('percent_result.txt', 'r') as f:
-                        percent=float(f.readline().split('\n')[0])
-                        averagePercentage=percent
-                
-                # delete the unzipped file percent_result.txt
-                os.remove("percent_result.txt")
-                
-                # Prints the Average Percentage from the global variable
-                print("\nAverage Percentage : "+ str(averagePercentage)+" %")
-                
-                """
-                Implement the Quality gates on the basis if below condition-
-                < 80 = Stage should fail - automatic failure
-                > 90 = stage should pass - automatic approval 
-                validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
-                """
-                
-                if averagePercentage < 80:
-                    print("Quality Gate check completed successfully")
-                    sys.exit("Quality Gate Failed!")
-                elif averagePercentage > 90:
-                    print("Quality Gate check completed successfully")
-                    print("Quality Gate Passed!")
+                echo 'Hello World'
             
 
             
