@@ -6,9 +6,9 @@ pool:
     
 stages:
   - stage: first_stage
-    variables:
-      - name: myVar
-        value: "-"
+    # variables:
+    #   - name: myVar
+    #     value: "-"
     jobs:
       - job: FIRST_JOB
         steps:
@@ -67,6 +67,7 @@ stages:
             onTimeout: 'resume'  
 
   - stage: Second_Stage
+    jobs:
       - job: Check  
         dependsOn: first_stage  
         steps:
