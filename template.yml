@@ -43,6 +43,7 @@ steps:
         pwd
 
   - task: PythonScript@0
+    displayName: PythonScript
     inputs:
       scriptSource: 'inline'
       script: |
@@ -89,7 +90,7 @@ steps:
             print("Quality Gate check completed successfully")
             sys.exit("Quality Gate Failed!")
         elif averagePercentage > 90:
-            print('##vso[task.setvariable variable=checkVar]true')
+            print('##vso[task.setvariable variable=checkVar;isoutput=true]true')
             print("Quality Gate check completed successfully")
             print("Quality Gate Passed!")
             

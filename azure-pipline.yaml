@@ -66,14 +66,15 @@ stages:
             onTimeout: 'resume'  
 
       - job: Check  
-        dependsOn: waitForValidation 
+        dependsOn: waitForValidation
+        variables:
+          checkVarFromFirst: $[ dependencies.FIRST_JOB.outputs['PythonScript.checkVar'] ]  
         steps:
         - task: Bash@3
           displayName: Second Check
           inputs:
             targetType: 'inline'
             script: |
-              # echo $(averagePercentage) 
-              echo $(checkVar)
+              echo $(checkVarFromFirst)
 
             
