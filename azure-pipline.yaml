@@ -38,6 +38,14 @@ stages:
               targetType: 'inline'
               script: |
                 echo 'Hello World'
+          
+          - task: Bash@3
+          displayName: 
+          inputs:
+            targetType: 'inline'
+            script: |
+              # echo $(averagePercentage) 
+              echo $(checkVar)
 
       - job: waitForValidation
         variables:
@@ -57,8 +65,10 @@ stages:
               # $(harsh)
               $(ravi)
             instructions: 'Please validate the build configuration and resume'
-            onTimeout: 'resume'    
-            
+            onTimeout: 'resume'  
+
+      - job: Check   
+        steps:
         - task: Bash@3
           displayName: 
           inputs:
