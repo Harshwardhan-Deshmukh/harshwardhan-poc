@@ -25,17 +25,6 @@ steps:
       artifactName: 'QualityGateStats_Final_Average'
       targetPath: '$(Build.ArtifactStagingDirectory)'
 
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        ls
-        pwd
-        cd ..
-        cd a
-        ls
-        pwd
-
   - task: PythonScript@0
     displayName: PythonScript
     inputs:
@@ -79,14 +68,15 @@ steps:
         > 90 = stage should pass - automatic approval 
         validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
         """
-
+        print("Quality Gate check completed successfully")
         if averagePercentage < 80:
-            print("Quality Gate check completed successfully")
             sys.exit("Quality Gate Failed!")
         elif averagePercentage > 90:
             print('##vso[task.setvariable variable=myVar;isOutput=true]false')
-            print("Quality Gate check completed successfully")
             print("Quality Gate Passed!")
+        elif averagePercentage >= 80 and averagePercentage <= 90:
+            print('##vso[task.setvariable variable=myVar;isOutput=true]true')
+            print("Quality Gate Average Percentage lies between 80 and 90 \nManual Approval Needed")
             
   
   - task: Bash@3
