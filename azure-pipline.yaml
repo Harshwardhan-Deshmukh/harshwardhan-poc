@@ -6,9 +6,6 @@ pool:
     
 stages:
   - stage: first_stage
-    variables: 
-      - name: checkVar
-        value: false
     jobs:
       # - job: Building_Policies
       #   steps:
@@ -42,8 +39,8 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                # echo $(averagePercentage) 
-                echo $(checkVar)
+                echo $(checkVarFalse) 
+                echo $(checkVarOP)
 
       - job: waitForValidation
         variables:
@@ -68,7 +65,7 @@ stages:
       - job: Check  
         dependsOn: waitForValidation
         variables:
-          checkVarFromFirst: $[ dependencies.FIRST_JOB.outputs['PythonScript.checkVar'] ]  
+          checkVarFromFirst: $[ dependencies.FIRST_JOB.outputs['PythonScript.checkVarOP'] ]  
         steps:
         - task: Bash@3
           displayName: Second Check
@@ -76,5 +73,7 @@ stages:
             targetType: 'inline'
             script: |
               echo $(checkVarFromFirst)
+              echo $(checkVarFalse) 
+              echo $(checkVarOP)
 
             
