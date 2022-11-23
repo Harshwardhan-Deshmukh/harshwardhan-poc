@@ -40,7 +40,7 @@ stages:
               targetType: 'inline'
               script: |
                 echo $(checkVarFalse) 
-                echo $(checkVarOP)
+                echo ##vso[task.setvariable variable=newBool;]true
 
       - job: waitForValidation
         variables:
@@ -75,5 +75,6 @@ stages:
               echo $(checkVarFromFirst)
               echo $(checkVarFalse) 
               echo $(checkVarOP)
+              echo $(newBool)
 
             
