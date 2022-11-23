@@ -69,7 +69,6 @@ stages:
   - stage: Second_Stage
     jobs:
       - job: Check  
-        dependsOn: first_stage  
         steps:
         - task: Bash@3
           displayName: Next Stage Skip Test
