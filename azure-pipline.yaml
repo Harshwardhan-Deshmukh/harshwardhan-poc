@@ -8,7 +8,7 @@ stages:
   - stage: first_stage
     variables:
       - name: myVar
-        value: ""
+        value: "-"
     jobs:
       # - job: Building_Policies
       #   steps:
@@ -42,7 +42,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                echo $(myVar) 
+                echo $(PythonScript.myVar) 
               
       - job: waitForValidation
         variables:
@@ -65,13 +65,15 @@ stages:
             onTimeout: 'resume'  
 
       - job: Check  
-        dependsOn: waitForValidation     
+        dependsOn: FIRST_JOB  
+        variables: 
+            myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
         steps:
         - task: Bash@3
           displayName: Second Check from different JOB
           inputs:
             targetType: 'inline'
             script: |
-              echo $(myVar) 
+              echo $(myVarFromJobA) 
 
             

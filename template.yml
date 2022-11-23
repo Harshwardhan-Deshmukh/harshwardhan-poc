@@ -84,7 +84,7 @@ steps:
             print("Quality Gate check completed successfully")
             sys.exit("Quality Gate Failed!")
         elif averagePercentage > 90:
-            print('##vso[task.setvariable variable=myVar;]false')
+            print('##vso[task.setvariable variable=myVar;isOutput=true]false')
             print("Quality Gate check completed successfully")
             print("Quality Gate Passed!")
             
@@ -94,7 +94,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        echo $(myVar) 
+        echo $(PythonScript.myVar) 
 
 
 
