@@ -67,7 +67,8 @@ stages:
             instructions: 'Please validate the build configuration and resume'
             onTimeout: 'resume'  
 
-      - job: Check   
+      - job: Check  
+        dependsOn: waitForValidation 
         steps:
         - task: Bash@3
           displayName: 
