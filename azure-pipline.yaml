@@ -34,17 +34,17 @@ stages:
               script: |
                 echo $(PythonScript.myVar) 
 
-      - job: Check  
-        dependsOn: FIRST_JOB  
-        variables: 
-            myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
-        steps:
-        - task: Bash@3
-          displayName: Second Check from different JOB
-          inputs:
-            targetType: 'inline'
-            script: |
-              echo $(myVarFromJobA) 
+      # - job: Check  
+      #   dependsOn: FIRST_JOB  
+      #   variables: 
+      #       myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
+      #   steps:
+      #   - task: Bash@3
+      #     displayName: Second Check from different JOB
+      #     inputs:
+      #       targetType: 'inline'
+      #       script: |
+      #         echo $(myVarFromJobA) 
 
       - job: waitForValidation
         condition: eq(variables['myVarFromJobA'], 'true')
@@ -65,6 +65,18 @@ stages:
               $(harsh)
             instructions: 'Please validate the build configuration and resume'
             onTimeout: 'resume'  
+
+  - stage: Second_Stage
+      - job: Check  
+        dependsOn: first_stage  
+        steps:
+        - task: Bash@3
+          displayName: Next Stage Skip Test
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Hello World!"
+
 
 
 
