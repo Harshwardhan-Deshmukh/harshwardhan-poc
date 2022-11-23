@@ -9,8 +9,6 @@ stages:
     variables: 
       - name: checkVar
         value: false
-      - name: pipelineId 
-        value: null
     jobs:
       # - job: Building_Policies
       #   steps:
@@ -40,7 +38,7 @@ stages:
                 echo 'Hello World'
           
           - task: Bash@3
-            displayName: 
+            displayName: First Check
             inputs:
               targetType: 'inline'
               script: |
@@ -71,7 +69,7 @@ stages:
         dependsOn: waitForValidation 
         steps:
         - task: Bash@3
-          displayName: 
+          displayName: Second Check
           inputs:
             targetType: 'inline'
             script: |
