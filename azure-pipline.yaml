@@ -22,7 +22,7 @@ stages:
       #           echo 'Hello world'
 
       - job: FIRST_JOB
-        dependsOn: Building_Policies
+        # dependsOn: Building_Policies
         steps:
           - task: Bash@3
             inputs:
