@@ -86,25 +86,7 @@ steps:
             print("Quality Gate check completed successfully")
             print("Quality Gate Passed!")
             
-  - job: waitForValidation
-    variables:
-      - name : harsh
-        value : hardeshm@publicisgroupe.net
-      - name : ravi
-        value : yenyelch@publicisgroupe.net
-    displayName: Wait for external validation
-    dependsOn: seeing_Policies
-    pool: server
-    timeoutInMinutes: 4320 # job times out in 3 days
-    steps:
-    - task: ManualValidation@0
-      timeoutInMinutes: 1440 # task times out in 1 day
-      inputs:
-        notifyUsers: | 
-          $(harsh)
-          $(ravi)
-        instructions: 'Please validate the build configuration and resume'
-        onTimeout: 'resume'    
+  
      
 
 
