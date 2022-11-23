@@ -51,7 +51,7 @@ stages:
         variables:
           - name : harsh
             value : hardeshm@publicisgroupe.net
-          myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
+          - myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
         displayName: Wait for external validation
         dependsOn: FIRST_JOB  
         pool: server
