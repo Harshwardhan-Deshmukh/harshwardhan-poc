@@ -12,16 +12,16 @@ stages:
       - name: pipelineId 
         value: null
     jobs:
-      - job: Building_Policies
-        steps:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |
-                # Write your commands here
-                echo 'Hello world'
+      # - job: Building_Policies
+      #   steps:
+      #     - task: Bash@3
+      #       inputs:
+      #         targetType: 'inline'
+      #         script: |
+      #           # Write your commands here
+      #           echo 'Hello world'
 
-      - job: seeing_Policies
+      - job: FIRST_JOB
         dependsOn: Building_Policies
         steps:
           - task: Bash@3
