@@ -41,8 +41,8 @@ stages:
 
       - job: waitForValidation
         variables:
-          - name : harsh
-            value : hardeshm@publicisgroupe.net
+          # - name : harsh
+          #   value : hardeshm@publicisgroupe.net
           - name : ravi
             value : yenyelch@publicisgroupe.net
         displayName: Wait for external validation
@@ -54,7 +54,7 @@ stages:
           timeoutInMinutes: 1440 # task times out in 1 day
           inputs:
             notifyUsers: | 
-              $(harsh)
+              # $(harsh)
               $(ravi)
             instructions: 'Please validate the build configuration and resume'
             onTimeout: 'resume'    
