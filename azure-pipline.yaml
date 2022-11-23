@@ -6,9 +6,6 @@ pool:
     
 stages:
   - stage: first_stage
-    # variables:
-    #   - name: myVar
-    #     value: "-"
     jobs:
       - job: FIRST_JOB
         steps:
@@ -47,7 +44,7 @@ stages:
       #         echo $(myVarFromJobA) 
 
       - job: waitForValidation
-        condition: eq(variables['myVarFromJobA'], 'true')
+        condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'))
         variables:
           - name : harsh
             value : hardeshm@publicisgroupe.net
