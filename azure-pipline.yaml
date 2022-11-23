@@ -6,6 +6,9 @@ pool:
     
 stages:
   - stage: first_stage
+    variables:
+      - name: myVar
+        value: ""
     jobs:
       # - job: Building_Policies
       #   steps:
@@ -35,13 +38,12 @@ stages:
                 echo 'Hello World'
           
           - task: Bash@3
-            displayName: First Check
+            displayName: First Check within same JOB
             inputs:
               targetType: 'inline'
               script: |
-                echo $(checkVarFalse) 
-                echo ##vso[task.setvariable variable=newBool;]true
-
+                echo $(myVar) 
+              
       - job: waitForValidation
         variables:
           # - name : harsh
@@ -63,18 +65,13 @@ stages:
             onTimeout: 'resume'  
 
       - job: Check  
-        dependsOn: waitForValidation
-        variables:
-          checkVarFromFirst: $[ dependencies.FIRST_JOB.outputs['PythonScript.checkVarOP'] ]  
+        dependsOn: waitForValidation     
         steps:
         - task: Bash@3
-          displayName: Second Check
+          displayName: Second Check from different JOB
           inputs:
             targetType: 'inline'
             script: |
-              echo $(checkVarFromFirst)
-              echo $(checkVarFalse) 
-              echo $(checkVarOP)
-              echo $(newBool)
+              echo $(myVar) 
 
             
