@@ -95,7 +95,7 @@ steps:
             
   
   - task: Bash@3
-    displayName: 
+    displayName: Template Check
     inputs:
       targetType: 'inline'
       script: |
