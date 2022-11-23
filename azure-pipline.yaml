@@ -47,7 +47,7 @@ stages:
           - name : ravi
             value : yenyelch@publicisgroupe.net
         displayName: Wait for external validation
-        dependsOn: seeing_Policies
+        dependsOn: FIRST_JOB
         pool: server
         timeoutInMinutes: 4320 # job times out in 3 days
         steps:
