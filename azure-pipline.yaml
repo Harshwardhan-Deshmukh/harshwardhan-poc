@@ -40,12 +40,12 @@ stages:
                 echo 'Hello World'
           
           - task: Bash@3
-          displayName: 
-          inputs:
-            targetType: 'inline'
-            script: |
-              # echo $(averagePercentage) 
-              echo $(checkVar)
+            displayName: 
+            inputs:
+              targetType: 'inline'
+              script: |
+                # echo $(averagePercentage) 
+                echo $(checkVar)
 
       - job: waitForValidation
         variables:
