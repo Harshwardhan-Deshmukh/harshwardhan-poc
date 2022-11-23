@@ -9,6 +9,7 @@ stages:
     variables: 
       - name: checkVar
         value: false
+      - pipelineId : null
     jobs:
       - job: Building_Policies
         steps:
