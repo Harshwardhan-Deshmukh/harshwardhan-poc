@@ -4,7 +4,7 @@ steps:
       targetType: 'inline'
       script: |
         echo $(pipelineId)
-        
+
   - task: Bash@3
     displayName: setOutput
     inputs:
@@ -89,16 +89,17 @@ steps:
             print("Quality Gate check completed successfully")
             sys.exit("Quality Gate Failed!")
         elif averagePercentage > 90:
-            
+            print('##vso[task.setvariable variable=checkVar]+true')
             print("Quality Gate check completed successfully")
             print("Quality Gate Passed!")
             
   
   - task: Bash@3
+    displayName: 
     inputs:
       targetType: 'inline'
       script: |
-        echo $(averagePercentage) 
+        # echo $(averagePercentage) 
         echo $(checkVar)
 
 
