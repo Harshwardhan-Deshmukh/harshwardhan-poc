@@ -6,6 +6,9 @@ pool:
     
 stages:
   - stage: first_stage
+    variables: 
+      - name: checkVar
+        value: false
     jobs:
       - job: Building_Policies
         steps:

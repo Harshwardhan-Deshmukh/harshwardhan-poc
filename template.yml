@@ -83,6 +83,7 @@ steps:
             print("Quality Gate check completed successfully")
             sys.exit("Quality Gate Failed!")
         elif averagePercentage > 90:
+            
             print("Quality Gate check completed successfully")
             print("Quality Gate Passed!")
             
@@ -92,6 +93,6 @@ steps:
       targetType: 'inline'
       script: |
         echo $(averagePercentage) 
-        
+
 
 
