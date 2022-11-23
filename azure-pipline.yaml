@@ -39,7 +39,6 @@ stages:
               script: |
                 echo 'Hello World'
 
-
       - job: waitForValidation
         variables:
           - name : harsh
@@ -60,5 +59,12 @@ stages:
             instructions: 'Please validate the build configuration and resume'
             onTimeout: 'resume'    
             
+        - task: Bash@3
+          displayName: 
+          inputs:
+            targetType: 'inline'
+            script: |
+              # echo $(averagePercentage) 
+              echo $(checkVar)
 
             
