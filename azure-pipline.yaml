@@ -3,7 +3,7 @@ trigger:
 
 pool:
   vmImage: "windows-latest"
-    
+
 stages:
   - stage: first_stage
     jobs:
@@ -77,4 +77,4 @@ stages:
 
 
 
-            
+
