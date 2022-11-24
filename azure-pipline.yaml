@@ -44,7 +44,7 @@ stages:
       #         echo $(myVarFromJobA) 
 
       - job: waitForValidation
-        condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'))
+        condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         variables:
           - name : harsh
             value : hardeshm@publicisgroupe.net
