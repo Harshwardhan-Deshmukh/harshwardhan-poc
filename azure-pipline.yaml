@@ -66,8 +66,6 @@ stages:
   - stage: Second_Stage
     jobs:
       - job: Check  
-        variables: 
-          branch: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
         steps:
         - task: Bash@3
           displayName: Next Stage Skip Test
@@ -75,7 +73,7 @@ stages:
             targetType: 'inline'
             script: |
               echo "Hello World!"
-              echo $branch
+              echo $(Build.SourceBranch)
 
 
 
