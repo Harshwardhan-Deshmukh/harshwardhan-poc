@@ -51,9 +51,8 @@ stages:
       #       instructions: 'Please validate the build configuration and resume'
       #       onTimeout: 'resume'  
   
-
   - stage: Manual_Approval
-    dependsOn: Variable_Check
+    dependsOn: first_stage
     # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
