@@ -63,7 +63,7 @@ stages:
       #       instructions: 'Please validate the build configuration and resume'
       #       onTimeout: 'resume'  
   
-  - stage: Manual Approval
+  - stage: Manual_Approval
     jobs:
     - deployment: A
       displayName: Check Approval
