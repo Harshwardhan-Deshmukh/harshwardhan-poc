@@ -64,6 +64,7 @@ stages:
       #       onTimeout: 'resume'  
   
   - stage: Manual_Approval
+    
     jobs:
     - deployment: A
       displayName: Check Approval
