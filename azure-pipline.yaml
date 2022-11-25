@@ -78,7 +78,7 @@ stages:
 
   - stage: Manual_Approval
     dependsOn: Variable_Check
-    condition: eq(variables['myVar'], 'true')
+    # condition: eq(variables['myVar'], 'true')
     variables:
       - name: checker
         value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
