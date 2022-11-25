@@ -64,6 +64,7 @@ stages:
       #       onTimeout: 'resume'  
 
       - deployment: A
+        dependsOn: FIRST_JOB
         displayName: Check Approval
         pool:
           vmImage: 'ubuntu-latest'
