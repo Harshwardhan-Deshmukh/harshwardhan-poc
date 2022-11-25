@@ -68,7 +68,6 @@ stages:
     dependsOn: first_stage
     variables:
       myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
-    jobs:
       steps:
         - bash: echo $myVar
           name: varCheck
