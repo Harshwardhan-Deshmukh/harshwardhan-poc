@@ -76,21 +76,22 @@ stages:
         - bash: echo $(checker) 
           name: varCheck
 
-  # - stage: Manual_Approval
-  #   dependsOn: Variable_Check
-  #   condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  #   variables:
-  #     myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
-  #   jobs:
-  #   - deployment: A
-  #     displayName: Check Approval
-  #     environment: 'dev'
-  #     strategy:                  
-  #       runOnce:
-  #         deploy:
-  #           steps:
-  #           - bash: echo $myVar
-  #             name: varCheck
+  - stage: Manual_Approval
+    dependsOn: Variable_Check
+    condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
+    jobs:
+    - deployment: A
+      displayName: Check Approval
+      environment: 'dev'
+      strategy:                  
+        runOnce:
+          deploy:
+            steps:
+            - bash: echo $(checker)
+              name: varCheck
             
 
   - stage: Second_Stage
@@ -105,18 +106,19 @@ stages:
               echo "Hello World!"
               echo $(Build.SourceBranch)
 
-  # - stage: Manual_Approval_Second
-  #   dependsOn: Second_Stage
-  #   condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  #   variables:
-  #     myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
-  #   jobs:
-  #   - deployment: A
-  #     displayName: Check Approval
-  #     environment: 'dev'
-  #     strategy:                  
-  #       runOnce:
-  #         deploy:
-  #           steps:
-  #           - bash: echo $myVar
-  #             name: varCheck
+  - stage: Manual_Approval_Second
+    dependsOn: Second_Stage
+    condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
+    jobs:
+    - deployment: A
+      displayName: Check Approval
+      environment: 'dev'
+      strategy:                  
+        runOnce:
+          deploy:
+            steps:
+            - bash: echo $(checker)
+              name: varCheck
