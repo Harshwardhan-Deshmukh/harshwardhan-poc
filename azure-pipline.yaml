@@ -63,7 +63,18 @@ stages:
       #       instructions: 'Please validate the build configuration and resume'
       #       onTimeout: 'resume'  
   
+  - stage: Variable_Check
+    # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    dependsOn: first_stage
+    variables:
+      myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
+    jobs:
+      steps:
+        - bash: echo $myVar
+          name: varCheck
+
   - stage: Manual_Approval
+    dependsOn: Variable_Check
     condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
