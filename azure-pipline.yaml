@@ -65,7 +65,7 @@ stages:
   - stage:
     jobs:
     - deployment: A
-      dependsOn: FIRST_JOB
+      # dependsOn: FIRST_JOB
       displayName: Check Approval
       pool:
         vmImage: 'ubuntu-latest'
