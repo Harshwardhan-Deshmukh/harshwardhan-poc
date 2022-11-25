@@ -96,7 +96,7 @@ stages:
             
 
   - stage: Second_Stage
-    dependsOn: Manual_Approval
+    # dependsOn: Manual_Approval
     jobs:
       - job: Check  
         steps:
