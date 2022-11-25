@@ -83,10 +83,6 @@ stages:
       - name: checker
         value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
-    steps:
-    - bash: echo $(checker) 
-      name: varCheck
-
     - deployment: A
       # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Check Approval
