@@ -72,7 +72,7 @@ stages:
     jobs:
     - job:
       steps:
-        - bash: echo $checker
+        - bash: echo $(myVarFromJobA) 
           name: varCheck
 
   # - stage: Manual_Approval
