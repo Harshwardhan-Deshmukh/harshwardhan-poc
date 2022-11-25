@@ -6,6 +6,8 @@ pool:
 
 stages:
   - stage: first_stage
+    variables:
+      - group: dev-variable-group
     jobs:
       - job: FIRST_JOB
         steps:
@@ -23,6 +25,9 @@ stages:
               targetType: 'inline'
               script: |
                 echo 'Hello World'
+                echo $(lower-limit)
+                echo $(upper-limit)
+
           
           - task: Bash@3
             displayName: First Check within same JOB
