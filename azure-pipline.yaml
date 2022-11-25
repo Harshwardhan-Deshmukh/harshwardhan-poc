@@ -31,17 +31,17 @@ stages:
               script: |
                 echo $(PythonScript.myVar) 
 
-      # - job: Check  
-      #   dependsOn: FIRST_JOB  
-      #   variables: 
-      #       myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
-      #   steps:
-      #   - task: Bash@3
-      #     displayName: Second Check from different JOB
-      #     inputs:
-      #       targetType: 'inline'
-      #       script: |
-      #         echo $(myVarFromJobA) 
+      - job: Check  
+        dependsOn: FIRST_JOB  
+        variables: 
+            myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
+        steps:
+        - task: Bash@3
+          displayName: Second Check from different JOB
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo $(myVarFromJobA) 
 
       # - job: waitForValidation
       #   condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -64,7 +64,9 @@ stages:
       #       onTimeout: 'resume'  
   
   - stage: Manual_Approval
-    
+    condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
     - deployment: A
       displayName: Check Approval
@@ -73,10 +75,9 @@ stages:
         runOnce:
           deploy:
             steps:
-            - bash: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the deployment variable value"
-              name: setvarStep
-            - bash: echo $(setvarStep.myOutputVar)
-              name: echovar
+            - bash: echo $myVar
+              name: varCheck
+            
 
   - stage: Second_Stage
     jobs:
