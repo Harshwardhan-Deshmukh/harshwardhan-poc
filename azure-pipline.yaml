@@ -103,6 +103,18 @@ stages:
               echo "Hello World!"
               echo $(Build.SourceBranch)
 
-
-
-
+  - stage: Manual_Approval
+    dependsOn: Second_Stage
+    condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      myVar:  $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
+    jobs:
+    - deployment: A
+      displayName: Check Approval
+      environment: 'dev'
+      strategy:                  
+        runOnce:
+          deploy:
+            steps:
+            - bash: echo $myVar
+              name: varCheck
