@@ -31,18 +31,6 @@ stages:
               script: |
                 echo $(PythonScript.myVar) 
 
-      - job: Check  
-        dependsOn: FIRST_JOB  
-        variables: 
-            myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
-        steps:
-        - task: Bash@3
-          displayName: Second Check from different JOB
-          inputs:
-            targetType: 'inline'
-            script: |
-              echo $(myVarFromJobA) 
-
       # - job: waitForValidation
       #   condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       #   variables:
@@ -63,18 +51,6 @@ stages:
       #       instructions: 'Please validate the build configuration and resume'
       #       onTimeout: 'resume'  
   
-  - stage: Variable_Check
-    # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    dependsOn: first_stage
-    displayName: Variable Checking stage
-    variables:
-      - name: checker
-        value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
-    jobs:
-    - job:
-      steps:
-        - bash: echo $(checker) 
-          name: varCheck
 
   - stage: Manual_Approval
     dependsOn: Variable_Check
@@ -95,7 +71,7 @@ stages:
               name: varCheck
 
   - stage: Second_Stage
-    # dependsOn: Manual_Approval
+    dependsOn: Manual_Approval
     jobs:
       - job: Check  
         steps:
