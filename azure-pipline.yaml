@@ -53,13 +53,13 @@ stages:
   
   - stage: Manual_Approval
     dependsOn: first_stage
-    # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
         value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
     - deployment: A
-      condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Check Approval
       environment: 'dev'
       strategy:                  
