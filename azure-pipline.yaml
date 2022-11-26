@@ -61,6 +61,16 @@ stages:
       - name: checker
         value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
+    - job: Next_Stage  
+        steps:
+        - task: Bash@3
+          displayName: Next Stage Skip Test
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Hello World!"
+              echo $(Build.SourceBranch)
+
     - deployment: A
       condition: and(succeeded(), eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Check Approval
@@ -71,14 +81,4 @@ stages:
             steps:
             - bash: echo $(checker)
               name: varCheck
-
-      - job: Next_Stage  
-        steps:
-        - task: Bash@3
-          displayName: Next Stage Skip Test
-          inputs:
-            targetType: 'inline'
-            script: |
-              echo "Hello World!"
-              echo $(Build.SourceBranch)
 
