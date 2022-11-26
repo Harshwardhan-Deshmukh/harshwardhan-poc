@@ -57,7 +57,7 @@ stages:
   - stage: Second_Stage
     # dependsOn: Manual_Approval
     jobs:
-      - job: Check  
+      - job: Next_Stage  
         steps:
         - task: Bash@3
           displayName: Next Stage Skip Test
