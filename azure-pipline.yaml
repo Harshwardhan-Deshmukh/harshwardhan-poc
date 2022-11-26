@@ -36,10 +36,10 @@ stages:
 
   - stage: Manual_Approval
     dependsOn: first_stage
-    condition: and(eq(variables[' $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]'], 'false'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    # variables:
-    #   - name: checker
-    #     value :
+    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value : $[ dependencies.first_stage.outputs['FIRST_JOB.PythonScript.MyVar'] ]
     jobs:
     - deployment: A
       # condition: and(succeeded(), eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
