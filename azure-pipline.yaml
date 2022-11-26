@@ -9,7 +9,7 @@ stages:
     variables:
       - group: dev-variable-group
     jobs:
-      - job: FIRST_JOB
+      - job: Sanity_On_Dev
         steps:
           - task: Bash@3
             inputs:
@@ -36,15 +36,15 @@ stages:
               script: |
                 echo $(PythonScript.myVar) 
   
-  - stage: Manual_Approval
+  - stage: QA_Release
     dependsOn: first_stage
-    condition: and(succeeded(), eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    # condition: and(succeeded(), eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
         value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
-    - deployment: A
-      # condition: and(succeeded(), eq(variables['myVar'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    - deployment: Manual_Approvl
+      condition: and(succeeded(), eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Check Approval
       environment: 'dev'
       strategy:                  
@@ -54,10 +54,7 @@ stages:
             - bash: echo $(checker)
               name: varCheck
 
-  - stage: Second_Stage
-    condition: and(not(failed()), not(canceled()))
-    jobs:
-      - job: Next_Stage  
+    - job: QA_Release  
         steps:
         - task: Bash@3
           displayName: Next Stage Skip Test
@@ -66,4 +63,18 @@ stages:
             script: |
               echo "Hello World!"
               echo $(Build.SourceBranch)
+
+  - stage: Second_Stage
+    condition: and(not(failed()), not(canceled()))
+    jobs:
+    - job: Next_Stage  
+        steps:
+        - task: Bash@3
+          displayName: Next Stage Skip Test
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Hello World!"
+              echo $(Build.SourceBranch)
+      
 
