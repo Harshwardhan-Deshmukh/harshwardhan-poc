@@ -35,26 +35,6 @@ stages:
               targetType: 'inline'
               script: |
                 echo $(PythonScript.myVar) 
-
-      # - job: waitForValidation
-      #   condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-      #   variables:
-      #     - name : harsh
-      #       value : hardeshm@publicisgroupe.net
-      #     - name: myVarFromJobA
-      #       value: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
-      #   displayName: Wait for external validation
-      #   dependsOn: FIRST_JOB  
-      #   pool: server
-      #   timeoutInMinutes: 4320 # job times out in 3 days
-      #   steps:
-      #   - task: ManualValidation@0
-      #     timeoutInMinutes: 1440 # task times out in 1 day
-      #     inputs:
-      #       notifyUsers: | 
-      #         [Demo Project]\Contributors
-      #       instructions: 'Please validate the build configuration and resume'
-      #       onTimeout: 'resume'  
   
   - stage: Manual_Approval
     dependsOn: first_stage
