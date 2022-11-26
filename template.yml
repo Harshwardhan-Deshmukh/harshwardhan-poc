@@ -71,7 +71,7 @@ steps:
         averagePercentage=97
         print("Quality Gate check completed successfully")
         
-        averagePercentage=86
+        averagePercentage=97
         if averagePercentage < 80:
             sys.exit("Quality Gate Failed!")
 
