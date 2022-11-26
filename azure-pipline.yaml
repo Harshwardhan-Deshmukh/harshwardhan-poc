@@ -54,6 +54,7 @@ stages:
               name: varCheck
 
   - stage: Second_Stage
+    dependsOn: Manual_Approval
     condition: and(not(failed()), not(canceled()))
     variables:
       - name: checker
