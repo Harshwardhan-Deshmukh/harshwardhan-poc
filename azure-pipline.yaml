@@ -50,7 +50,7 @@ stages:
         runOnce:
           deploy:
             steps:
-            - bash: echo $(checker)
+            - bash: echo "Manual Approval done"
               name: varCheck
 
   - stage: Second_Stage
@@ -69,35 +69,4 @@ stages:
             echo "Hello World!"
             echo $(Build.SourceBranch)
 
-  - stage: Manual_Approval_Stage_two
-    dependsOn: Second_Stage
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    variables:
-      - name: checker
-        value : $[ dependencies.first_stage.outputs['FIRST_JOB.PythonScript.MyVar'] ]
-    jobs:
-    - deployment: SanityDev
-      displayName: Check Approval
-      environment: 'dev'
-      strategy:                  
-        runOnce:
-          deploy:
-            steps:
-            - bash: echo $(checker)
-              name: varCheck
 
-  - stage: Second_Stage_Once_Again
-    condition: and(not(failed()), not(canceled()))
-    variables:
-      - name: checker
-        value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
-    jobs:
-    - job: My_Next_Stage  
-      steps:
-      - task: Bash@3
-        displayName: Next Stage Skip Test
-        inputs:
-          targetType: 'inline'
-          script: |
-            echo "Hello World!"
-            echo $(Build.SourceBranch)
