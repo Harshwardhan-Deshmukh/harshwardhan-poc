@@ -70,11 +70,14 @@ steps:
         """
         averagePercentage=94
         print("Quality Gate check completed successfully")
+        
         if averagePercentage < $(lower-limit):
             sys.exit("Quality Gate Failed!")
+
         elif averagePercentage > $(upper-limit):
             print('##vso[task.setvariable variable=myVar;isOutput=true]false')
             print("Quality Gate Passed!")
+
         elif averagePercentage >= $(lower-limit) and averagePercentage <= $(upper-limit):
             print('##vso[task.setvariable variable=myVar;isOutput=true]true')
             print("Quality Gate Average Percentage lies between 80 and 90 \nManual Approval Needed")
