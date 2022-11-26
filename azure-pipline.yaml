@@ -55,7 +55,7 @@ stages:
               name: varCheck
 
   - stage: Second_Stage
-    condition: and(not(failed('Manual_Approval')), not(canceled('Manual_Approval')))
+    condition: and(not(failed()), not(canceled()))
     jobs:
       - job: Next_Stage  
         steps:
