@@ -2,7 +2,7 @@ steps:
   - task: Bash@3
     displayName: setOutput
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         runId=95
         echo $runId
@@ -11,24 +11,24 @@ steps:
 
   - task: Bash@3
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         echo $(pipelineId)
-        
+
   - task: DownloadPipelineArtifact@2
     inputs:
-      buildType: 'specific'
-      project: '00ba1eed-ee40-4302-9da3-16779398b203'
-      definition: '3'
-      buildVersionToDownload: 'specific'
+      buildType: "specific"
+      project: "00ba1eed-ee40-4302-9da3-16779398b203"
+      definition: "3"
+      buildVersionToDownload: "specific"
       pipelineId: $(pipelineId)
-      artifactName: 'QualityGateStats_Final_Average'
-      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifactName: "QualityGateStats_Final_Average"
+      targetPath: "$(Build.ArtifactStagingDirectory)"
 
   - task: PythonScript@0
     displayName: PythonScript
     inputs:
-      scriptSource: 'inline'
+      scriptSource: "inline"
       script: |
         import os, sys
         from pathlib import Path
@@ -68,24 +68,23 @@ steps:
         > 90 = stage should pass - automatic approval 
         validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
         """
-        averagePercentage=85
+        averagePercentage=86
         print("Quality Gate check completed successfully")
+        
         if averagePercentage < 80:
             sys.exit("Quality Gate Failed!")
+
         elif averagePercentage > 90:
             print('##vso[task.setvariable variable=myVar;isOutput=true]false')
             print("Quality Gate Passed!")
+
         elif averagePercentage >= 80 and averagePercentage <= 90:
             print('##vso[task.setvariable variable=myVar;isOutput=true]true')
             print("Quality Gate Average Percentage lies between 80 and 90 \nManual Approval Needed")
-            
-  
+
   - task: Bash@3
     displayName: Template Check
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
-        echo $(PythonScript.myVar) 
-
-
-
+        echo $(PythonScript.myVar)

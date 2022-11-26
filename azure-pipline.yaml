@@ -23,6 +23,9 @@ stages:
               targetType: 'inline'
               script: |
                 echo 'Hello World'
+                echo $(lower-limit)
+                echo $(upper-limit)
+
           
           - task: Bash@3
             displayName: First Check within same JOB
@@ -31,50 +34,37 @@ stages:
               script: |
                 echo $(PythonScript.myVar) 
 
-      # - job: Check  
-      #   dependsOn: FIRST_JOB  
-      #   variables: 
-      #       myVarFromJobA: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
-      #   steps:
-      #   - task: Bash@3
-      #     displayName: Second Check from different JOB
-      #     inputs:
-      #       targetType: 'inline'
-      #       script: |
-      #         echo $(myVarFromJobA) 
 
-      - job: waitForValidation
-        condition: and(succeeded(), eq(variables['myVarFromJobA'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        variables:
-          - name : harsh
-            value : hardeshm@publicisgroupe.net
-          - name: myVarFromJobA
-            value: $[ dependencies.FIRST_JOB.outputs['PythonScript.myVar'] ] 
-        displayName: Wait for external validation
-        dependsOn: FIRST_JOB  
-        pool: server
-        timeoutInMinutes: 4320 # job times out in 3 days
-        steps:
-        - task: ManualValidation@0
-          timeoutInMinutes: 1440 # task times out in 1 day
-          inputs:
-            notifyUsers: | 
-              $(harsh)
-            instructions: 'Please validate the build configuration and resume'
-            onTimeout: 'resume'  
+  - stage: Manual_Approval
+    dependsOn: first_stage
+    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value : $[ dependencies.first_stage.outputs['FIRST_JOB.PythonScript.MyVar'] ]
+    jobs:
+    - deployment: A
+      displayName: Check Approval
+      environment: 'dev'
+      strategy:                  
+        runOnce:
+          deploy:
+            steps:
+            - bash: echo $(checker)
+              name: varCheck
+
 
   - stage: Second_Stage
+    condition: and(not(failed()), not(canceled()))
+    variables:
+      - name: checker
+        value : $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
-      - job: Check  
-        steps:
-        - task: Bash@3
-          displayName: Next Stage Skip Test
-          inputs:
-            targetType: 'inline'
-            script: |
-              echo "Hello World!"
-              echo $(Build.SourceBranch)
-
-
-
-
+    - job: Next_Stage  
+      steps:
+      - task: Bash@3
+        displayName: Next Stage Skip Test
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "Hello World!"
+            echo $(Build.SourceBranch)
