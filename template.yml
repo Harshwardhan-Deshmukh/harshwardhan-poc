@@ -68,10 +68,10 @@ steps:
         > 90 = stage should pass - automatic approval 
         validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
         """
-        averagePercentage=97
+      
         print("Quality Gate check completed successfully")
         
-        averagePercentage=97
+        averagePercentage=86
         if averagePercentage < 80:
             sys.exit("Quality Gate Failed!")
 
