@@ -42,7 +42,6 @@ stages:
         value : $[ dependencies.first_stage.outputs['FIRST_JOB.PythonScript.MyVar'] ]
     jobs:
     - deployment: A
-      # condition: and(succeeded(), eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Check Approval
       environment: 'dev'
       strategy:                  
@@ -53,7 +52,6 @@ stages:
               name: varCheck
 
   - stage: Second_Stage
-    # dependsOn: first_stage
     condition: and(not(failed()), not(canceled()))
     variables:
       - name: checker
