@@ -64,23 +64,23 @@ steps:
 
         """
         Implement the Quality gates on the basis if below condition-
-        < 80 = Stage should fail - automatic failure
-        > 90 = stage should pass - automatic approval 
-        validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
+        < $(lower-limit) = Stage should fail - automatic failure
+        > $(upper-limit) = stage should pass - automatic approval 
+        validate the Range of threshold –  ( >= $(lower-limit) and  <= $(upper-limit)) - Manual approval
         """
 
         print("Quality Gate check completed successfully")
 
-        if averagePercentage < 80:
+        if averagePercentage < $(lower-limit):
             sys.exit("Quality Gate Failed!")
 
-        elif averagePercentage > 90:
+        elif averagePercentage > $(upper-limit):
             print('##vso[task.setvariable variable=myVar;isOutput=true]false')
             print("Quality Gate Passed!")
 
-        elif averagePercentage >= 80 and averagePercentage <= 90:
+        elif averagePercentage >= $(lower-limit) and averagePercentage <= $(upper-limit):
             print('##vso[task.setvariable variable=myVar;isOutput=true]true')
-            print("Quality Gate Average Percentage lies between 80 and 90 \nManual Approval Needed")
+            print("Quality Gate Average Percentage lies between $(lower-limit) and $(upper-limit) \nManual Approval Needed")
 
   - task: Bash@3
     displayName: Template Check
@@ -88,5 +88,3 @@ steps:
       targetType: "inline"
       script: |
         echo $(PythonScript.myVar)
-        echo $(LOWERLIMIT)
-        echo $(UPPERLIMIT)

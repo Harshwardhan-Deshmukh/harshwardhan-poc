@@ -6,19 +6,10 @@ pr: none
 pool:
   vmImage: "windows-latest"
 
-parameters:
-  - name: upperLimitdev
-    displayName: "Quality Gates Dev Upper Limit"
-    type: number
-    default: 90
-
-  - name: lowerLimitdev
-    displayName: "Quality Gates Dev Lower Limit"
-    type: number
-    default: 80
-
 stages:
   - stage: first_stage
+    variables:
+      - group: dev-variable-group
     jobs:
       - job: FIRST_JOB
         steps:
@@ -36,10 +27,8 @@ stages:
               targetType: "inline"
               script: |
                 echo 'Hello World'
-                echo ${{parameters.upperLimitdev}}
-                echo ${{parameters.lowerLimitdev}}
-                echo $(LOWERLIMIT)
-                echo $(UPPERLIMIT)
+                echo $(lower-limit)
+                echo $(upper-limit)
 
           - task: Bash@3
             displayName: First Check within same JOB
