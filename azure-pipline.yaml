@@ -9,12 +9,12 @@ pool:
 parameters:
   - name: upperLimit
     displayName: "Quality Gates Upper Limit"
-    type: int
+    type: number
     defaults: 90
 
   - name: lowerLimit
-    displayName: "Quality Gates Upper Limit"
-    type: int
+    displayName: "Quality Gates Lower Limit"
+    type: number
     defaults: 80
 
 stages:
