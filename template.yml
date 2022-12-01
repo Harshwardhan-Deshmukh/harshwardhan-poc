@@ -71,6 +71,7 @@ steps:
 
         print("Quality Gate check completed successfully")
 
+        averagePercentage=85
         if averagePercentage < $(lower-limit):
             sys.exit("Quality Gate Failed!")
 
