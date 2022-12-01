@@ -7,13 +7,33 @@ pool:
   vmImage: "windows-latest"
 
 parameters:
-  - name: upperLimit
-    displayName: "Quality Gates Upper Limit"
+  - name: upperLimitdev
+    displayName: "Quality Gates Dev Upper Limit"
     type: number
     default: 90
 
-  - name: lowerLimit
-    displayName: "Quality Gates Lower Limit"
+  - name: lowerLimitdev
+    displayName: "Quality Gates Dev Lower Limit"
+    type: number
+    default: 80
+
+  - name: upperLimitqa
+  displayName: "Quality Gates QA Upper Limit"
+  type: number
+  default: 90
+
+  - name: lowerLimitqa
+    displayName: "Quality Gates QA Lower Limit"
+    type: number
+    default: 80
+
+  - name: upperLimitqc
+  displayName: "Quality Gates QC Upper Limit"
+  type: number
+  default: 90
+
+  - name: lowerLimitqc
+    displayName: "Quality Gates QC Lower Limit"
     type: number
     default: 80
 
@@ -36,8 +56,12 @@ stages:
               targetType: "inline"
               script: |
                 echo 'Hello World'
-                echo ${{parameters.upperLimit}}
-                echo ${{parameters.lowerLimit}}
+                echo ${{parameters.upperLimitdev}}
+                echo ${{parameters.lowerLimitdev}}
+                echo ${{parameters.upperLimitqa}}
+                echo ${{parameters.lowerLimitqa}}
+                echo ${{parameters.upperLimitqc}}
+                echo ${{parameters.lowerLimitqc}}
 
           - task: Bash@3
             displayName: First Check within same JOB
