@@ -18,9 +18,9 @@ parameters:
     default: 80
 
   - name: upperLimitqa
-  displayName: "Quality Gates QA Upper Limit"
-  type: number
-  default: 90
+    displayName: "Quality Gates QA Upper Limit"
+    type: number
+    default: 90
 
   - name: lowerLimitqa
     displayName: "Quality Gates QA Lower Limit"
@@ -28,9 +28,9 @@ parameters:
     default: 80
 
   - name: upperLimitqc
-  displayName: "Quality Gates QC Upper Limit"
-  type: number
-  default: 90
+    displayName: "Quality Gates QC Upper Limit"
+    type: number
+    default: 90
 
   - name: lowerLimitqc
     displayName: "Quality Gates QC Lower Limit"
