@@ -38,6 +38,8 @@ stages:
                 echo 'Hello World'
                 echo ${{parameters.upperLimitdev}}
                 echo ${{parameters.lowerLimitdev}}
+                echo $(LOWERLIMIT)
+                echo $$(UPPERLIMIT)
 
           - task: Bash@3
             displayName: First Check within same JOB
