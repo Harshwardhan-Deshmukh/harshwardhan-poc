@@ -10,12 +10,12 @@ parameters:
   - name: upperLimit
     displayName: "Quality Gates Upper Limit"
     type: number
-    defaults: 90
+    default: 90
 
   - name: lowerLimit
     displayName: "Quality Gates Lower Limit"
     type: number
-    defaults: 80
+    default: 80
 
 stages:
   - stage: first_stage
