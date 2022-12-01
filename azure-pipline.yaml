@@ -39,7 +39,7 @@ stages:
                 echo ${{parameters.upperLimitdev}}
                 echo ${{parameters.lowerLimitdev}}
                 echo $(LOWERLIMIT)
-                echo $$(UPPERLIMIT)
+                echo $(UPPERLIMIT)
 
           - task: Bash@3
             displayName: First Check within same JOB
