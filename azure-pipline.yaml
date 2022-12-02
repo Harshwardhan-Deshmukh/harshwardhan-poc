@@ -75,6 +75,8 @@ stages:
                 echo $(Build.SourceBranch)
 
   - stage: QA_STAGE
+    dependsOn: Second_Stage
+    condition: and(not(failed()), not(canceled()))
     variables:
       - group: dev-variable-group
     jobs:
@@ -89,8 +91,8 @@ stages:
 
           - template: "./template.yml"
             parameters:
-                lowerLimit: $(qa-lower-limit)
-                upperLimit: $(qa-upper-limit)
+              lowerLimit: $(qa-lower-limit)
+              upperLimit: $(qa-upper-limit)
 
           - task: Bash@3
             inputs:
@@ -123,3 +125,20 @@ stages:
               steps:
                 - bash: echo "Manual Approval done"
                   name: varCheck
+
+  - stage: QA_Second_Stage
+    dependsOn: Manual_Approval_Second
+    condition: and(not(failed()), not(canceled()))
+    variables:
+      - name: checker
+        value: $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
+    jobs:
+      - job: Next_Stage
+        steps:
+          - task: Bash@3
+            displayName: Next Stage Skip Test
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Hello World!"
+                echo $(Build.SourceBranch)
