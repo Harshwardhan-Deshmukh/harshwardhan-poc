@@ -108,18 +108,18 @@ stages:
                 echo $(PythonScript.myVar)
 
   - stage: Manual_Approval_Second
-  dependsOn: QA_STAGE
-  condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  variables:
-    - name: checker
-      value: $[ dependencies.QA_STAGE.outputs['QA_FIRST_JOB.PythonScript.MyVar'] ]
-  jobs:
-    - deployment: A
-      displayName: Check Approval
-      environment: "dev"
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              - bash: echo "Manual Approval done"
-                name: varCheck
+    dependsOn: QA_STAGE
+    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value: $[ dependencies.QA_STAGE.outputs['QA_FIRST_JOB.PythonScript.MyVar'] ]
+    jobs:
+      - deployment: A
+        displayName: Check Approval
+        environment: "dev"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - bash: echo "Manual Approval done"
+                  name: varCheck
