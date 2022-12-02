@@ -1,3 +1,7 @@
+parameters:
+  - name: lowerLimit
+  - name: upperLimit
+
 steps:
   - task: Bash@3
     displayName: setOutput
@@ -62,25 +66,19 @@ steps:
         # Prints the Average Percentage from the global variable
         print("\nAverage Percentage : "+ str(averagePercentage)+" %")
 
-        """
-        Implement the Quality gates on the basis if below condition-
-        < 80 = Stage should fail - automatic failure
-        > 90 = stage should pass - automatic approval 
-        validate the Range of threshold –  ( >= 80 and  <= 90) - Manual approval
-        """
-        averagePercentage=95
         print("Quality Gate check completed successfully")
-        
-        if averagePercentage < 80:
+
+        averagePercentage=85
+        if averagePercentage < ${{ parameters.lowerLimit }}:
             sys.exit("Quality Gate Failed!")
 
-        elif averagePercentage > 90:
+        elif averagePercentage >  ${{ parameters.upperLimit }}:
             print('##vso[task.setvariable variable=myVar;isOutput=true]false')
             print("Quality Gate Passed!")
 
-        elif averagePercentage >= 80 and averagePercentage <= 90:
+        elif averagePercentage >= ${{ parameters.lowerLimit }} and averagePercentage <= ${{ parameters.upperLimit }}:
             print('##vso[task.setvariable variable=myVar;isOutput=true]true')
-            print("Quality Gate Average Percentage lies between 80 and 90 \nManual Approval Needed")
+            print("Quality Gate Average Percentage lies between ${{ parameters.lowerLimit }} and  ${{ parameters.upperLimit }} \nManual Approval Needed")
 
   - task: Bash@3
     displayName: Template Check
@@ -88,3 +86,5 @@ steps:
       targetType: "inline"
       script: |
         echo $(PythonScript.myVar)
+        echo ${{ parameters.lowerLimit }} 
+        echo ${{ parameters.upperLimit }} 
