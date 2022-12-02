@@ -21,14 +21,17 @@ stages:
                 echo "Checking complete"
 
           - template: "./template.yml"
+            parameters:
+              lowerLimit: $(dev-lower-limit)
+              upperLimit: $(dev-upper-limit)
 
           - task: Bash@3
             inputs:
               targetType: "inline"
               script: |
                 echo 'Hello World'
-                echo $(lower-limit)
-                echo $(upper-limit)
+                echo $(dev-lower-limit)
+                echo $(dev-upper-limit)
 
           - task: Bash@3
             displayName: First Check within same JOB
@@ -70,3 +73,53 @@ stages:
               script: |
                 echo "Hello World!"
                 echo $(Build.SourceBranch)
+
+  - stage: QA_STAGE
+    variables:
+      - group: dev-variable-group
+    jobs:
+      - job: QA_FIRST_JOB
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                # Write your commands here
+                echo "Checking complete"
+
+          - template: "./template.yml"
+            parameters:
+                lowerLimit: $(qa-lower-limit)
+                upperLimit: $(qa-upper-limit)
+
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                echo 'Hello World'
+                echo $(qa-lower-limit)
+                echo $(qa-upper-limit)
+
+          - task: Bash@3
+            displayName: First Check within same JOB
+            inputs:
+              targetType: "inline"
+              script: |
+                echo $(PythonScript.myVar)
+
+  - stage: Manual_Approval_Second
+  dependsOn: QA_STAGE
+  condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  variables:
+    - name: checker
+      value: $[ dependencies.QA_STAGE.outputs['QA_FIRST_JOB.PythonScript.MyVar'] ]
+  jobs:
+    - deployment: A
+      displayName: Check Approval
+      environment: "dev"
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - bash: echo "Manual Approval done"
+                name: varCheck
