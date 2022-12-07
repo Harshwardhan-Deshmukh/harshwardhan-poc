@@ -31,6 +31,7 @@ steps:
 
   - task: PythonScript@0
     displayName: Script
+    name: Script
     inputs:
       scriptSource: "inline"
       script: |
