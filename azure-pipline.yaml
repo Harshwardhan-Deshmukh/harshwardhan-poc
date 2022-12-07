@@ -55,7 +55,7 @@ stages:
             deploy:
               steps:
                 - bash: echo "Manual Approval done"
-                  name: varCheck
+                  name: message
                 - bash: echo $(checker)
                   name: varCheck
 
