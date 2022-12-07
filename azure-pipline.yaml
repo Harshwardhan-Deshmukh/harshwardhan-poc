@@ -126,6 +126,8 @@ stages:
             deploy:
               steps:
                 - bash: echo "Manual Approval done"
+                  name: message
+                - bash: echo $(checker)
                   name: varCheck
 
   - stage: QA_Second_Stage
