@@ -30,7 +30,7 @@ steps:
       targetPath: "$(Build.ArtifactStagingDirectory)"
 
   - task: PythonScript@0
-    displayName: PythonScript
+    displayName: Script
     inputs:
       scriptSource: "inline"
       script: |
