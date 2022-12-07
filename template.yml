@@ -86,6 +86,6 @@ steps:
     inputs:
       targetType: "inline"
       script: |
-        echo $(PythonScript.myVar)
+        echo $(Script.myVar)
         echo ${{ parameters.lowerLimit }} 
         echo ${{ parameters.upperLimit }} 
