@@ -62,9 +62,6 @@ stages:
   - stage: Second_Stage
     dependsOn: Manual_Approval
     condition: and(not(failed()), not(canceled()))
-    variables:
-      - name: checker
-        value: $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
     jobs:
       - job: Next_Stage
         steps:
@@ -116,7 +113,7 @@ stages:
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
-        value: $[ dependencies.QA_STAGE.outputs['QA_FIRST_JOB.PythonScript.MyVar'] ]
+        value: $[ dependencies.QA_STAGE.outputs['QA_FIRST_JOB.Script.MyVar'] ]
     jobs:
       - deployment: A
         displayName: Check Approval
@@ -133,9 +130,6 @@ stages:
   - stage: QA_Second_Stage
     dependsOn: Manual_Approval_Second
     condition: and(not(failed()), not(canceled()))
-    variables:
-      - name: checker
-        value: $[ stageDependencies.first_stage.FIRST_JOB.outputs['Script.MyVar'] ]
     jobs:
       - job: Next_Stage
         steps:
