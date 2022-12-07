@@ -45,7 +45,7 @@ stages:
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
-        value: $[ dependencies.first_stage.outputs['FIRST_JOB.PythonScript.MyVar'] ]
+        value: $[ dependencies.first_stage.outputs['FIRST_JOB.Script.MyVar'] ]
     jobs:
       - deployment: A
         displayName: Check Approval
@@ -135,7 +135,7 @@ stages:
     condition: and(not(failed()), not(canceled()))
     variables:
       - name: checker
-        value: $[ stageDependencies.first_stage.FIRST_JOB.outputs['PythonScript.MyVar'] ]
+        value: $[ stageDependencies.first_stage.FIRST_JOB.outputs['Script.MyVar'] ]
     jobs:
       - job: Next_Stage
         steps:
