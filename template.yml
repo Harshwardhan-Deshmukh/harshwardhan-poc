@@ -1,91 +1,43 @@
 parameters:
-  - name: lowerLimit
-  - name: upperLimit
+- name: sdfx_version
+  type: string 
+- name: node_version
+  type: string 
+- name: secure_file_variable_name
+  type: string 
+- name: username
+  type: string 
+- name: instance_url
+  type: string 
+- name: client_id
+  type: string 
+- name: environment_name
+  type: string 
 
 steps:
-  - task: Bash@3
-    displayName: setOutput
+  - task: UseNode@1
+    displayName: 'Use Node.js ${{ parameters.node_version }}'
     inputs:
-      targetType: "inline"
-      script: |
-        runId=95
-        echo $runId
-        echo "##vso[task.setvariable variable=pipelineId;]$runId"
-        echo $runId
+      version: '${{ parameters.node_version }}'
 
-  - task: Bash@3
+  - bash: |
+      echo "Installing sdfx cli in ${{ parameters.sdfx_version }} version"
+      npm install sfdx-cli@${{ parameters.sdfx_version }} --global
+    displayName: Install Salesforce CLI
+
+  - task: DownloadSecureFile@1
+    name: caCertificate
+    displayName: 'Download CA certificate'
     inputs:
-      targetType: "inline"
-      script: |
-        echo $(pipelineId)
+      secureFile: ${{ parameters.secure_file_variable_name }}
 
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      buildType: "specific"
-      project: "00ba1eed-ee40-4302-9da3-16779398b203"
-      definition: "3"
-      buildVersionToDownload: "specific"
-      pipelineId: $(pipelineId)
-      artifactName: "QualityGateStats_Final_Average"
-      targetPath: "$(Build.ArtifactStagingDirectory)"
+  - script: |
+      echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
+      sudo chown root:root $(caCertificate.secureFilePath)
+      sudo chmod a+r $(caCertificate.secureFilePath)
+      sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
+    displayName: Prepare secure file
 
-  - task: PythonScript@0
-    displayName: Script
-    name: Script
-    inputs:
-      scriptSource: "inline"
-      script: |
-        import os, sys
-        from pathlib import Path
-        from zipfile import ZipFile
-
-        # Variable for accessing the current working directory easily
-        os.chdir("..")
-        cwd = os.getcwd()+"/a"
-        print("Current working directory is:", cwd)
-        print("\nChecking the Average Percentage Value of Quality Gates")
-        # looping through all the items present in this cwd path
-        for file in os.listdir(cwd):
-            # Verification whether file name with prefix Percentage_Average_QualityGateStats_ is present in this directory or not
-            if file.startswith("QualityGateStats_Final_Average"):
-                with ZipFile(cwd+"/"+file, 'r') as zObject:
-                    fileName=os.path.splitext(os.path.basename(cwd+"/"+file))[0]
-                    # Unzipping the file to the cwd path
-                    zObject.extractall(path=cwd)
-
-        # Changing the current working directory to cwd path which is declared above
-        os.chdir(cwd)
-        averagePercentage=0
-        # Reading the average percentage value declared in percent_result.txt file
-        with open('percent_result.txt', 'r') as f:
-                percent=float(f.readline().split('\n')[0])
-                averagePercentage=percent
-
-        # delete the unzipped file percent_result.txt
-        os.remove("percent_result.txt")
-
-        # Prints the Average Percentage from the global variable
-        print("\nAverage Percentage : "+ str(averagePercentage)+" %")
-
-        print("Quality Gate check completed successfully")
-
-        averagePercentage=85
-        if averagePercentage < ${{ parameters.lowerLimit }}:
-            sys.exit("Quality Gate Failed!")
-
-        elif averagePercentage >  ${{ parameters.upperLimit }}:
-            print('##vso[task.setvariable variable=myVar;isOutput=true]false')
-            print("Quality Gate Passed!")
-
-        elif averagePercentage >= ${{ parameters.lowerLimit }} and averagePercentage <= ${{ parameters.upperLimit }}:
-            print('##vso[task.setvariable variable=myVar;isOutput=true]true')
-            print("Quality Gate Average Percentage lies between ${{ parameters.lowerLimit }} and  ${{ parameters.upperLimit }} \nManual Approval Needed")
-
-  - task: Bash@3
-    displayName: Template Check
-    inputs:
-      targetType: "inline"
-      script: |
-        echo $(Script.myVar)
-        echo ${{ parameters.lowerLimit }} 
-        echo ${{ parameters.upperLimit }} 
+  - bash:
+      sfdx force:auth:jwt:grant --clientid "${{ parameters.client_id }}" --jwtkeyfile $(Agent.TempDirectory)/${{ parameters.secure_file_variable_name }} --username "${{ parameters.username }}" --instanceurl "${{ parameters.instance_url }}" -a ${{ parameters.environment_name }}
+    displayName: Authorize to salesforce org devint
