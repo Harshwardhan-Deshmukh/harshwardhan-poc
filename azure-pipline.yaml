@@ -4,139 +4,41 @@ trigger:
 pr: none
 
 pool:
-  vmImage: "windows-latest"
+  vmImage: ubuntu-latest
+
+variables:
+# variables to be used to trigger QE testing pipelines
+  # project_name: "TAF-TEST"
+  # pipeline_id: 165
+# Loadrunner
+  # project_name_ld: "loadrunner-cloud"
+  # pipeline_id_ld: 127
+# Generic
+  sdfx_version: latest
+  node_version: 16.17.0
+  # sonar_service_connection: 'psecom-platform-devv-sonar'
 
 stages:
-  - stage: first_stage
+  - stage: QA_Release
+    dependsOn: Snyk
+    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual'))
     variables:
-      - group: dev-variable-group
+      - group: qa-variable-group   
     jobs:
-      - job: FIRST_JOB
+      - job: Deploy
         steps:
-          - task: Bash@3
-            inputs:
-              targetType: "inline"
-              script: |
-                # Write your commands here
-                echo "Checking complete"
+        - checkout: self
+          path: https://github.com/Asda-eCom/asda-care-sfsc
+        - template: 'templates/template_salesforce_authentication.yml'
+          parameters:
+            sdfx_version: $(sdfx_version)
+            node_version: $(node_version)
+            secure_file_variable_name: 'server.key1'
+            username: $(username)
+            instance_url: $(instanceurl)
+            client_id: $(clientid)
+            environment_name: 'qa'
 
-          - template: "./template.yml"
-            parameters:
-              lowerLimit: $(dev-lower-limit)
-              upperLimit: $(dev-upper-limit)
-
-          - task: Bash@3
-            inputs:
-              targetType: "inline"
-              script: |
-                echo 'Hello World'
-                echo $(dev-lower-limit)
-                echo $(dev-upper-limit)
-
-          - task: Bash@3
-            displayName: First Check within same JOB
-            inputs:
-              targetType: "inline"
-              script: |
-                echo $(PythonScript.myVar)
-
-  - stage: Manual_Approval
-    dependsOn: first_stage
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    variables:
-      - name: checker
-        value: $[ dependencies.first_stage.outputs['FIRST_JOB.Script.MyVar'] ]
-    jobs:
-      - deployment: A
-        displayName: Check Approval
-        environment: "dev"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - bash: echo "Manual Approval done"
-                  name: message
-                - bash: echo $(checker)
-                  name: varCheck
-
-  - stage: Second_Stage
-    dependsOn: Manual_Approval
-    condition: and(not(failed()), not(canceled()))
-    jobs:
-      - job: Next_Stage
-        steps:
-          - task: Bash@3
-            displayName: Next Stage Skip Test
-            inputs:
-              targetType: "inline"
-              script: |
-                echo "Hello World!"
-                echo $(Build.SourceBranch)
-
-  - stage: QA_STAGE
-    dependsOn: Second_Stage
-    condition: and(not(failed()), not(canceled()))
-    variables:
-      - group: dev-variable-group
-    jobs:
-      - job: QA_FIRST_JOB
-        steps:
-          - task: Bash@3
-            inputs:
-              targetType: "inline"
-              script: |
-                # Write your commands here
-                echo "Checking complete"
-
-          - template: "./template.yml"
-            parameters:
-              lowerLimit: $(qa-lower-limit)
-              upperLimit: $(qa-upper-limit)
-
-          - task: Bash@3
-            inputs:
-              targetType: "inline"
-              script: |
-                echo 'Hello World'
-                echo $(qa-lower-limit)
-                echo $(qa-upper-limit)
-
-          - task: Bash@3
-            displayName: First Check within same JOB
-            inputs:
-              targetType: "inline"
-              script: |
-                echo $(PythonScript.myVar)
-
-  - stage: Manual_Approval_Second
-    dependsOn: QA_STAGE
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    variables:
-      - name: checker
-        value: $[ dependencies.QA_STAGE.outputs['QA_FIRST_JOB.Script.MyVar'] ]
-    jobs:
-      - deployment: A
-        displayName: Check Approval
-        environment: "dev"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - bash: echo "Manual Approval done"
-                  name: message
-                - bash: echo $(checker)
-                  name: varCheck
-
-  - stage: QA_Second_Stage
-    dependsOn: Manual_Approval_Second
-    condition: and(not(failed()), not(canceled()))
-    jobs:
-      - job: Next_Stage
-        steps:
-          - task: Bash@3
-            displayName: Next Stage Skip Test
-            inputs:
-              targetType: "inline"
-              script: |
-                echo "Hello World!"
-                echo $(Build.SourceBranch)
+        - template: 'templates/template_salesforce_deployment.yml'
+          parameters:
+            environment_name: 'qa'
