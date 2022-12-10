@@ -70,12 +70,12 @@ stages:
   - stage: QualityGate_Dev
     dependsOn: Sanity_on_Dev
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    timeoutInMinutes: 1
     variables:
       - name: checker
         value: $[ dependencies.Sanity_on_Dev.outputs['SanityTest.PythonScript.MyVar'] ]
     jobs:
       - deployment: QualityGates
+        timeoutInMinutes: 1
         displayName: Check Approval
         environment: "dev"
         strategy:
@@ -114,12 +114,12 @@ stages:
   - stage: QualityGate_QA
     dependsOn: Sanity_on_QA
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    timeoutInMinutes: 1
     variables:
       - name: checker
         value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.myVar'] ]
     jobs:
       - deployment: QualityGates
+        timeoutInMinutes: 1
         displayName: Waiting for External Validation
         environment: "dev"
         strategy:
@@ -166,12 +166,12 @@ stages:
     dependsOn: Regression_Sit
     # condition: eq(variables['checker'], 'true')
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    timeoutInMinutes: 1
     variables:
       - name: checker
         value: $[ dependencies.Regression_Sit.outputs['Regression_on_QC.PythonScript.myVar'] ]
     jobs:
       - deployment: QualityGates
+        timeoutInMinutes: 1
         displayName: Waiting for External Validation
         environment: "dev"
         strategy:
