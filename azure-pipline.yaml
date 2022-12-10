@@ -1,1 +1,192 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - feature/*
+  paths:
+    exclude:
+      - README.md
 
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Snyk
+    jobs:
+      - job: verify_snyk
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Snyk scan complete"
+
+  - stage: Sonar_non_main
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    jobs:
+      - job: Verify_dev_sonar_non_main
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Sonar Scan"
+
+  - stage: Dev_Release
+    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+    jobs:
+      - job: Deploy_dev
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Deploy to Dev env"
+
+      - job: Sonar_dev
+        dependsOn: Deploy_dev
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: 'echo "Sonar on Dev"'
+
+  - stage: Sanity_on_Dev
+    dependsOn: Dev_Release
+    condition: and(not(failed()), not(canceled()))
+    variables:
+      - group: dev-variable-group
+    jobs:
+      - job: SanityTest
+        timeoutInMinutes: 120
+        steps:
+          - template: "./template.yml"
+            parameters:
+              lowerLimit: $(dev-lower-limit)
+              upperLimit: $(dev-upper-limit)
+
+  - stage: QualityGate_Dev
+    dependsOn: Sanity_on_Dev
+    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value: $[ dependencies.Sanity_on_Dev.outputs['SanityTest.PythonScript.MyVar'] ]
+    jobs:
+      - deployment: QualityGates
+        displayName: Check Approval
+        environment: "dev"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - bash: echo "Manual Approval done"
+                  name: varCheck
+
+  - stage: QA_Release
+    dependsOn: QualityGate_Dev
+    # Uncomment this condition if you want to test QA_Release in feature branch. Note: Releases should happen from main branch only.
+    # condition: and(not(failed()), not(canceled()))
+    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - job: Deploy
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Deploy to QA env"
+
+  - stage: Sanity_on_QA
+    dependsOn: QA_Release
+    condition: and(not(failed()), not(canceled()))
+    variables:
+      - group: dev-variable-group
+    jobs:
+      - job: SanityTest
+        timeoutInMinutes: 120
+        steps:
+          - template: "./template.yml"
+            parameters:
+              lowerLimit: $(qa-lower-limit)
+              upperLimit: $(qa-upper-limit)
+
+  - stage: QualityGate_QA
+    dependsOn: Sanity_on_QA
+    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.gatesChecker'] ]
+    jobs:
+      - deployment: QualityGates
+        displayName: Waiting for External Validation
+        environment: "dev"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - bash: echo "Manual Approval Done"
+                  name: Approval
+
+  - stage: SIT_Release
+    dependsOn: QualityGate_QA
+    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - deployment: Deploy_SIT
+        environment: sit
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  path: https://github.com/Harshwardhan-Deshmukh/harshwardhan-poc
+                - task: Bash@3
+                  inputs:
+                    targetType: "inline"
+                    script: |
+                      echo "Deploy to SIT env"
+
+  - stage: Regression_Sit
+    dependsOn: SIT_Release
+    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - group: dev-variable-group
+    jobs:
+      - job: Regression_on_QC
+        timeoutInMinutes: 120
+        steps:
+          - template: "./template.yml"
+            parameters:
+              lowerLimit: $(qa-lower-limit)
+              upperLimit: $(qa-upper-limit)
+
+      # Manual Approval step
+  - stage: QualityGate_Regression_Sit
+    dependsOn: Regression_Sit
+    # condition: eq(variables['checker'], 'true')
+    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+      - name: checker
+        value: $[ dependencies.Regression_Sit.outputs['Regression_on_QC.PythonScript.gatesChecker'] ]
+    jobs:
+      - deployment: QualityGates
+        displayName: Waiting for External Validation
+        environment: "dev"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - bash: echo "Manual Approval Done"
+                  name: Approval
+
+  - stage: Next_Stage
+    dependsOn: QualityGate_Regression_Sit
+    jobs:
+      - job: Final_Jobs
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "This corresponds to all the final stages"
