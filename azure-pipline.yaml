@@ -34,7 +34,7 @@ stages:
                 echo "Sonar Scan"
 
   - stage: Dev_Release
-    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
 
     jobs:
       - job: Deploy_dev
@@ -55,7 +55,7 @@ stages:
 
   - stage: Sanity_on_Dev
     dependsOn: Dev_Release
-    condition: and(not(failed()), not(canceled()))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
     variables:
       - group: dev-variable-group
     jobs:
@@ -86,9 +86,7 @@ stages:
 
   - stage: QA_Release
     dependsOn: QualityGate_Dev
-    # Uncomment this condition if you want to test QA_Release in feature branch. Note: Releases should happen from main branch only.
-    # condition: and(not(failed()), not(canceled()))
-    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
     jobs:
       - job: Deploy
         steps:
@@ -100,7 +98,7 @@ stages:
 
   - stage: Sanity_on_QA
     dependsOn: QA_Release
-    condition: and(not(failed()), not(canceled()))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
     variables:
       - group: dev-variable-group
     jobs:
@@ -131,7 +129,7 @@ stages:
 
   - stage: SIT_Release
     dependsOn: QualityGate_QA
-    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
     jobs:
       - deployment: Deploy_SIT
         environment: sit
@@ -149,7 +147,7 @@ stages:
 
   - stage: Regression_Sit
     dependsOn: SIT_Release
-    condition: and(and(not(failed()), not(canceled())), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
     variables:
       - group: dev-variable-group
     jobs:
@@ -182,7 +180,7 @@ stages:
 
   - stage: Next_Stage
     dependsOn: QualityGate_Regression_Sit
-    condition: and(not(failed()), not(canceled()))
+    condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
     jobs:
       - job: Final_Jobs
         steps:
