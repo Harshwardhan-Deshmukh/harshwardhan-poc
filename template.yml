@@ -63,7 +63,7 @@ steps:
         print("\nAverage Percentage : "+ str(averagePercentage)+" %")
         print("Quality Gate check completed successfully")
 
-        averagePercentage=75
+        averagePercentage=85
         print("\nAverage Percentage : "+ str(averagePercentage)+" %")
         if averagePercentage < ${{ parameters.lowerLimit }}:
             sys.exit("Quality Gate Failed!")

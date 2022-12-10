@@ -117,7 +117,7 @@ stages:
     # condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
-        value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.gatesChecker'] ]
+        value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.myVar'] ]
     jobs:
       - deployment: QualityGates
         displayName: Waiting for External Validation
@@ -168,7 +168,7 @@ stages:
     # condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
-        value: $[ dependencies.Regression_Sit.outputs['Regression_on_QC.PythonScript.gatesChecker'] ]
+        value: $[ dependencies.Regression_Sit.outputs['Regression_on_QC.PythonScript.myVar'] ]
     jobs:
       - deployment: QualityGates
         displayName: Waiting for External Validation
