@@ -9,7 +9,7 @@ trigger:
       - README.md
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu-latest"
 
 stages:
   - stage: Snyk
@@ -32,7 +32,6 @@ stages:
               targetType: "inline"
               script: |
                 echo "Sonar Scan"
-                exit 1
 
   - stage: Dev_Release
     condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
@@ -70,7 +69,8 @@ stages:
 
   - stage: QualityGate_Dev
     dependsOn: Sanity_on_Dev
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: eq(variables['checker'], 'true')
+    # condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
         value: $[ dependencies.Sanity_on_Dev.outputs['SanityTest.PythonScript.MyVar'] ]
@@ -113,7 +113,8 @@ stages:
 
   - stage: QualityGate_QA
     dependsOn: Sanity_on_QA
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: eq(variables['checker'], 'true')
+    # condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
         value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.gatesChecker'] ]
@@ -163,8 +164,8 @@ stages:
       # Manual Approval step
   - stage: QualityGate_Regression_Sit
     dependsOn: Regression_Sit
-    # condition: eq(variables['checker'], 'true')
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: eq(variables['checker'], 'true')
+    # condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
         value: $[ dependencies.Regression_Sit.outputs['Regression_on_QC.PythonScript.gatesChecker'] ]
