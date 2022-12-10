@@ -75,7 +75,7 @@ stages:
         value: $[ dependencies.Sanity_on_Dev.outputs['SanityTest.PythonScript.MyVar'] ]
     jobs:
       - deployment: QualityGates
-        timeoutInMinutes: 1
+        cancelTimeoutInMinutes: 1
         displayName: Check Approval
         environment: "dev"
         strategy:
@@ -119,7 +119,7 @@ stages:
         value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.myVar'] ]
     jobs:
       - deployment: QualityGates
-        timeoutInMinutes: 1
+        cancelTimeoutInMinutes: 1
         displayName: Waiting for External Validation
         environment: "dev"
         strategy:
@@ -171,7 +171,7 @@ stages:
         value: $[ dependencies.Regression_Sit.outputs['Regression_on_QC.PythonScript.myVar'] ]
     jobs:
       - deployment: QualityGates
-        timeoutInMinutes: 1
+        cancelTimeoutInMinutes: 1
         displayName: Waiting for External Validation
         environment: "dev"
         strategy:
