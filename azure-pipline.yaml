@@ -69,7 +69,6 @@ stages:
 
   - stage: QualityGate_Dev
     dependsOn: Sanity_on_Dev
-    # condition: eq(variables['checker'], 'true')
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
@@ -113,7 +112,6 @@ stages:
 
   - stage: QualityGate_QA
     dependsOn: Sanity_on_QA
-    # condition: eq(variables['checker'], 'true')
     condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
       - name: checker
