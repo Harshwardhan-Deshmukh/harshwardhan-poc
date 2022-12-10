@@ -1,1 +1,84 @@
+parameters:
+  - name: lowerLimit
+  - name: upperLimit
 
+steps:
+  - task: Bash@3
+    displayName: setOutput
+    inputs:
+      targetType: "inline"
+      script: |
+        runId=95
+        echo $runId
+        echo "##vso[task.setvariable variable=pipelineId;]$runId"
+        echo $runId
+
+  - task: Bash@3
+    inputs:
+      targetType: "inline"
+      script: |
+        echo $(pipelineId)
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: "specific"
+      project: "00ba1eed-ee40-4302-9da3-16779398b203"
+      definition: "3"
+      buildVersionToDownload: "specific"
+      pipelineId: $(pipelineId)
+      artifactName: "QualityGateStats_Final_Average"
+      targetPath: "$(Build.ArtifactStagingDirectory)"
+
+  - task: PythonScript@0
+    displayName: PythonScript
+    inputs:
+      scriptSource: "inline"
+      script: |
+        import os, sys
+        from pathlib import Path
+        from zipfile import ZipFile
+        # Variable for accessing the current working directory easily
+        os.chdir("..")
+        cwd = os.getcwd()+"/a"
+        print("Current working directory is:", cwd)
+        print("\nChecking the Average Percentage Value of Quality Gates")
+        # looping through all the items present in this cwd path
+        for file in os.listdir(cwd):
+            # Verification whether file name with prefix Percentage_Average_QualityGateStats_ is present in this directory or not
+            if file.startswith("QualityGateStats_Final_Average"):
+                with ZipFile(cwd+"/"+file, 'r') as zObject:
+                    fileName=os.path.splitext(os.path.basename(cwd+"/"+file))[0]
+                    # Unzipping the file to the cwd path
+                    zObject.extractall(path=cwd)
+        # Changing the current working directory to cwd path which is declared above
+        os.chdir(cwd)
+        averagePercentage=0
+        # Reading the average percentage value declared in percent_result.txt file
+        with open('percent_result.txt', 'r') as f:
+                percent=float(f.readline().split('\n')[0])
+                averagePercentage=percent
+        # delete the unzipped file percent_result.txt
+        os.remove("percent_result.txt")
+        # Prints the Average Percentage from the global variable
+        print("\nAverage Percentage : "+ str(averagePercentage)+" %")
+        print("Quality Gate check completed successfully")
+
+        averagePercentage=85
+        print("\nAverage Percentage : "+ str(averagePercentage)+" %")
+        if averagePercentage < ${{ parameters.lowerLimit }}:
+            sys.exit("Quality Gate Failed!")
+        elif averagePercentage >  ${{ parameters.upperLimit }}:
+            print('##vso[task.setvariable variable=myVar;isOutput=true]false')
+            print("Quality Gate Passed!")
+        elif averagePercentage >= ${{ parameters.lowerLimit }} and averagePercentage <= ${{ parameters.upperLimit }}:
+            print('##vso[task.setvariable variable=myVar;isOutput=true]true')
+            print("Quality Gate Average Percentage lies between ${{ parameters.lowerLimit }} and  ${{ parameters.upperLimit }} \nManual Approval Needed")
+
+  - task: Bash@3
+    displayName: Template Check
+    inputs:
+      targetType: "inline"
+      script: |
+        echo $(PythonScript.myVar)
+        echo ${{ parameters.lowerLimit }} 
+        echo ${{ parameters.upperLimit }}
