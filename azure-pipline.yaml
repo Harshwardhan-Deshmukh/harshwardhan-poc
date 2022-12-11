@@ -24,7 +24,7 @@ stages:
                 exit 1
 
   - stage: Sonar_non_main
-    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
       - job: Verify_dev_sonar_non_main
         steps:
