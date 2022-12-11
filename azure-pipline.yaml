@@ -71,7 +71,7 @@ stages:
 
   - stage: QualityGate_Dev
     dependsOn: Sanity_on_Dev
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(not(failed()), not(canceled())), and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     variables:
       - name: checker
         value: $[ dependencies.Sanity_on_Dev.outputs['SanityTest.PythonScript.MyVar'] ]
@@ -114,7 +114,7 @@ stages:
 
   - stage: QualityGate_QA
     dependsOn: Sanity_on_QA
-    condition: and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(and(not(failed()), not(canceled())), and(eq(variables['checker'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
     variables:
       - name: checker
         value: $[ dependencies.Sanity_on_QA.outputs['SanityTest.PythonScript.myVar'] ]
