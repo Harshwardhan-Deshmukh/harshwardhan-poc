@@ -21,7 +21,7 @@ stages:
               targetType: "inline"
               script: |
                 echo "Snyk scan complete"
-                exit 1
+                
 
   - stage: Sonar_non_main
     condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -33,6 +33,7 @@ stages:
               targetType: "inline"
               script: |
                 echo "Sonar Scan"
+                exit 1
 
   - stage: Dev_Release
     condition: and(and(not(failed()), not(canceled())), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
