@@ -21,6 +21,7 @@ stages:
               targetType: "inline"
               script: |
                 echo "Snyk scan complete"
+                exit 1
 
   - stage: Sonar_non_main
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
